@@ -7,7 +7,6 @@ import { afterTimeout, highlightLoaderStub } from './common-tests';
 
 @Component({
   template: `<code [highlight]="code" [language]="language"></code>`,
-  standalone: true,
   imports: [Highlight]
 })
 class TestHighlightComponent {
@@ -21,8 +20,8 @@ describe('Highlight Directive', () => {
   let directiveInstance: Highlight;
   let fixture: ComponentFixture<TestHighlightComponent>;
 
-  const testJsCode: string = 'console.log(&quot;test&quot;)';
-  const testHtmlCode: string = '<div class=&quot;my-class&quot;></div>';
+  const testJsCode = 'console.log(&quot;test&quot;)';
+  const testHtmlCode = '<div class=&quot;my-class&quot;></div>';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

@@ -2,7 +2,7 @@ import { InjectionToken, Provider } from '@angular/core';
 
 
 export function isUrl(url: string): boolean {
-  const regExp: RegExp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!]))?/;
+  const regExp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!]))?/;
   return regExp.test(url);
 }
 
@@ -79,8 +79,7 @@ interface History {
   url: string;
 }
 
-interface Files {
-  [fileName: string]: {
+type Files = Record<string, {
     filename: string;
     type: string;
     language: string;
@@ -88,8 +87,7 @@ interface Files {
     size: number;
     truncated: boolean;
     content: string;
-  };
-}
+  }>;
 
 export interface Gist {
   url: string;

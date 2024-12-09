@@ -14,7 +14,6 @@ import { CodeComponent } from '../code/code.component';
   templateUrl: './gist.component.html',
   styleUrls: ['./gist.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     MatIconModule,

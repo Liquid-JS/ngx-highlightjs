@@ -1,15 +1,13 @@
 import {
   Directive,
-  inject,
   effect,
   ElementRef,
-  InputSignal,
-  WritableSignal,
-  SecurityContext,
   EventEmitter,
-  PLATFORM_ID
+  inject,
+  InputSignal,
+  SecurityContext,
+  WritableSignal
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import type { AutoHighlightResult, HighlightResult } from 'highlight.js';
 import { HighlightJS } from './highlight.service';
@@ -22,7 +20,6 @@ export abstract class HighlightBase {
 
   private readonly _nativeElement: HTMLElement = inject(ElementRef<HTMLElement>).nativeElement;
   private _sanitizer: DomSanitizer = inject(DomSanitizer);
-  private _platform: object = inject(PLATFORM_ID);
 
   // Code to highlight
   abstract code: InputSignal<string>;
@@ -35,38 +32,44 @@ export abstract class HighlightBase {
 
 
   constructor() {
-    if (isPlatformBrowser(this._platform)) {
-      effect(() => {
-        const code: string = this.code();
-        // Set code text before highlighting
+    let codeInitial = true
+    effect(() => {
+      const code: string = this.code();
+      // Set code text before highlighting
+      if (codeInitial) {
+        // Effects run once to create dependency tree, avoid setting initial undefined content
+        codeInitial = false
+      } else {
         this.setTextContent(code || '');
-        if (code) {
-          this.highlightElement(code);
-        }
-      });
+      }
+      if (code) {
+        this.highlightElement(code);
+      }
+    });
 
-      effect(() => {
-        const res: AutoHighlightResult = this.highlightResult();
+    let resultInitial = true
+    effect(() => {
+      const res: AutoHighlightResult = this.highlightResult();
+      if (resultInitial) {
+        // Effects run once to create dependency tree, avoid setting initial undefined content
+        resultInitial = false
+      } else {
         this.setInnerHTML(res?.value);
         // Forward highlight response to the highlighted output
         this.highlighted.emit(res);
-      });
-    }
+      }
+    });
   }
 
-  protected abstract highlightElement(code: string): Promise<void> ;
+  protected abstract highlightElement(code: string): Promise<void>;
 
   private setTextContent(content: string): void {
-    requestAnimationFrame(() =>
-      this._nativeElement.textContent = content
-    );
+    this._nativeElement.textContent = content
   }
 
   private setInnerHTML(content: string | null): void {
-    requestAnimationFrame(() =>
-      this._nativeElement.innerHTML = trustedHTMLFromStringBypass(
-        this._sanitizer.sanitize(SecurityContext.HTML, content) || ''
-      )
-    );
+    this._nativeElement.innerHTML = trustedHTMLFromStringBypass(
+      this._sanitizer.sanitize(SecurityContext.HTML, content) || ''
+    )
   }
 }

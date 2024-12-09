@@ -8,7 +8,7 @@ import md from 'highlight.js/lib/languages/markdown';
 
 describe('HighlightService', () => {
 
-  const testJsCode: string = 'console.log(&quot;test&quot;)';
+  const testJsCode = 'console.log(&quot;test&quot;)';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,7 +31,7 @@ describe('HighlightService', () => {
         }
       } as HighlightJSOptions
     });
-    const configureSpy: jasmine.Spy = spyOn(hljs,'configure');
+    const configureSpy: jasmine.Spy = spyOn(hljs, 'configure');
     const loader: HighlightLoader = TestBed.inject(HighlightLoader);
     TestBed.inject(HighlightJS);
     await loader.ready;

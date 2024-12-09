@@ -41,7 +41,8 @@
             "lintFilePatterns": [
               "projects/ngx-highlightjs/**/*.ts",
               "projects/ngx-highlightjs/**/*.html"
-            ]
+            ],
+            "eslintConfig": "projects/ngx-highlightjs/eslint.config.js"
           }
         }
       }
@@ -157,7 +158,7 @@
   },
   "cli": {
     "schematicCollections": [
-      "@angular-eslint/schematics"
+      "angular-eslint"
     ]
   }
 }

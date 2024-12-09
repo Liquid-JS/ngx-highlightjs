@@ -140,7 +140,7 @@ describe('HighlightService', () => {
     document.defaultView['hljs'] = hljs;
     const loader: HighlightLoader = TestBed.inject(HighlightLoader);
 
-    const path: string = 'https://path-to-theme.css/';
+    const path = 'https://path-to-theme.css/';
 
     const linkElement: HTMLLinkElement = document.createElement('link');
     const createElementSpy: jasmine.Spy = spyOn(document, 'createElement').and.returnValue(linkElement);
@@ -163,7 +163,7 @@ describe('HighlightService', () => {
 
     loader.setTheme('https://initial-theme-path.css/');
 
-    const diffPath: string = 'https://different-theme-path.css/';
+    const diffPath = 'https://different-theme-path.css/';
 
     loader.setTheme(diffPath);
     expect(loader['_themeLinkElement'].href).toBe(diffPath);
@@ -173,7 +173,7 @@ describe('HighlightService', () => {
     document.defaultView['hljs'] = hljs;
     const loader: HighlightLoader = TestBed.inject(HighlightLoader);
 
-    const path: string = 'https://path-to-theme.css/';
+    const path = 'https://path-to-theme.css/';
     spyOn(loader as any, 'loadTheme');
 
     loader.setTheme(path);
@@ -183,7 +183,7 @@ describe('HighlightService', () => {
 
 
   it('should load theme on init if themePath option is provided', () => {
-    const themePath: string = 'https://path-to-theme.css/';
+    const themePath = 'https://path-to-theme.css/';
     TestBed.overrideProvider(HIGHLIGHT_OPTIONS, {
       useValue: {
         themePath: 'https://path-to-theme.css/'

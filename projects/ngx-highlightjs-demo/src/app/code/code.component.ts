@@ -4,7 +4,6 @@ import { HighlightLineNumbers } from 'ngx-highlightjs/line-numbers';
 import { NgScrollbar } from 'ngx-scrollbar';
 
 @Component({
-  standalone: true,
   selector: 'app-code',
   imports: [HighlightModule, HighlightLineNumbers, NgScrollbar],
   template: `
@@ -15,7 +14,7 @@ import { NgScrollbar } from 'ngx-scrollbar';
     </ng-scrollbar>
   `,
   styleUrls: ['./code.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeComponent {
   @Input() code: string;

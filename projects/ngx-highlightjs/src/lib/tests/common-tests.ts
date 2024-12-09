@@ -10,7 +10,7 @@ export async function afterTimeout(timeout: number): Promise<void> {
 export const highlightLoaderStub = {
   ready: new Promise<HLJSApi>((resolve) => {
     document.defaultView['hljs'] = hljs;
-    activateLineNumbers();
+    activateLineNumbers(document, window);
     resolve(document.defaultView['hljs']);
   })
 };

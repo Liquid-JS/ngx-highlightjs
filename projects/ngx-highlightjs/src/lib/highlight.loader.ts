@@ -1,21 +1,21 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
+import { Injectable, PendingTasks, inject } from '@angular/core';
+import type { HLJSApi } from 'highlight.js';
 import {
-  Observable,
   BehaviorSubject,
   EMPTY,
-  tap,
-  map,
-  from,
-  filter,
-  forkJoin,
-  switchMap,
-  throwError,
+  Observable,
   catchError,
-  firstValueFrom
+  filter,
+  firstValueFrom,
+  forkJoin,
+  from,
+  map,
+  switchMap,
+  tap,
+  throwError
 } from 'rxjs';
 import { HIGHLIGHT_OPTIONS, HighlightJSOptions } from './highlight.model';
-import type { HLJSApi } from 'highlight.js';
 import { LoaderErrors } from './loader-errors';
 
 @Injectable({
@@ -24,55 +24,53 @@ import { LoaderErrors } from './loader-errors';
 export class HighlightLoader {
 
   private document: Document = inject(DOCUMENT);
-  private isPlatformBrowser: boolean = isPlatformBrowser(inject(PLATFORM_ID));
   private options: HighlightJSOptions = inject(HIGHLIGHT_OPTIONS, { optional: true });
+  private pendingTasks = inject(PendingTasks)
 
   // Stream that emits when hljs library is loaded and ready to use
   private readonly _ready: BehaviorSubject<HLJSApi> = new BehaviorSubject<HLJSApi>(null);
 
-  readonly ready: Promise<HLJSApi> = firstValueFrom(this._ready.asObservable().pipe(
+  readonly ready: Promise<HLJSApi> = this.pendingTasks.run(() => firstValueFrom(this._ready.asObservable().pipe(
     filter((hljs: HLJSApi) => !!hljs),
-  ));
+  )));
 
   private _themeLinkElement: HTMLLinkElement;
 
   constructor() {
-    if (this.isPlatformBrowser) {
-      // Check if hljs is already available
-      if (this.document.defaultView['hljs']) {
-        this._ready.next(this.document.defaultView['hljs']);
-      } else {
-        // Load hljs library
-        this._loadLibrary().pipe(
-          switchMap((hljs: HLJSApi) => {
-            if (this.options?.lineNumbersLoader) {
-              // Make hljs available on window object (required for the line numbers library)
-              this.document.defaultView['hljs'] = hljs;
-              // Load line numbers library
-              return this.loadLineNumbers().pipe(
-                tap((plugin: { activateLineNumbers: () => void }) => {
-                  plugin.activateLineNumbers();
-                  this._ready.next(hljs);
-                })
-              );
-            }
-            else {
-              this._ready.next(hljs);
-              return EMPTY;
-            }
-          }),
-          catchError((e: any) => {
-            console.error('[HLJS] ', e);
-            this._ready.error(e);
+    // Check if hljs is already available
+    if (this.document.defaultView['hljs']) {
+      this._ready.next(this.document.defaultView['hljs']);
+    } else {
+      // Load hljs library
+      this._loadLibrary().pipe(
+        switchMap((hljs: HLJSApi) => {
+          if (this.options?.lineNumbersLoader) {
+            // Make hljs available on window object (required for the line numbers library)
+            this.document.defaultView['hljs'] = hljs;
+            // Load line numbers library
+            return this.loadLineNumbers().pipe(
+              tap((plugin: { activateLineNumbers: (document: Document, window: Window) => void }) => {
+                plugin.activateLineNumbers(this.document, this.document.defaultView);
+                this._ready.next(hljs);
+              })
+            );
+          }
+          else {
+            this._ready.next(hljs);
             return EMPTY;
-          })
-        ).subscribe();
+          }
+        }),
+        catchError((e: any) => {
+          console.error('[HLJS] ', e);
+          this._ready.error(e);
+          return EMPTY;
+        })
+      ).subscribe();
 
-      }
-      // Load highlighting theme
-      if (this.options?.themePath) {
-        this.loadTheme(this.options.themePath);
-      }
+    }
+    // Load highlighting theme
+    if (this.options?.themePath) {
+      this.loadTheme(this.options.themePath);
     }
   }
 
@@ -141,12 +139,10 @@ export class HighlightLoader {
    * Reload theme styles
    */
   setTheme(path: string): void {
-    if (this.isPlatformBrowser) {
-      if (this._themeLinkElement) {
-        this._themeLinkElement.href = path;
-      } else {
-        this.loadTheme(path);
-      }
+    if (this._themeLinkElement) {
+      this._themeLinkElement.href = path;
+    } else {
+      this.loadTheme(path);
     }
   }
 

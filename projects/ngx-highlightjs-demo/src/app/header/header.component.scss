@@ -18,6 +18,18 @@
   justify-content: center;
 }
 
+.flex-header {
+  flex-direction: row;
+  box-sizing: border-box;
+  display: flex;
+  place-content: center;
+  align-items: center;
+
+  @media screen and (max-width: 959.98px) {
+    flex-direction: column;
+  }
+}
+
 h1 {
   font-size: 1.6em;
   font-weight: 300;

@@ -1,14 +1,12 @@
-export function activateLineNumbers() {
-  const w: any = window;
-  const d: Document = document;
+export function activateLineNumbers(d: Document, w: any) {
 
-  const TABLE_NAME: string = 'hljs-ln',
-    LINE_NAME: string = 'hljs-ln-line',
-    CODE_BLOCK_NAME: string = 'hljs-ln-code',
-    NUMBERS_BLOCK_NAME: string = 'hljs-ln-numbers',
-    NUMBER_LINE_NAME: string = 'hljs-ln-n',
-    DATA_ATTR_NAME: string = 'data-line-number',
-    BREAK_LINE_REGEXP: RegExp = /\r\n|\r|\n/g;
+  const TABLE_NAME = 'hljs-ln',
+    LINE_NAME = 'hljs-ln-line',
+    CODE_BLOCK_NAME = 'hljs-ln-code',
+    NUMBERS_BLOCK_NAME = 'hljs-ln-numbers',
+    NUMBER_LINE_NAME = 'hljs-ln-n',
+    DATA_ATTR_NAME = 'data-line-number',
+    BREAK_LINE_REGEXP = /\r\n|\r|\n/g;
 
   if (w.hljs) {
     w.hljs.initLineNumbersOnLoad = initLineNumbersOnLoad;
@@ -108,7 +106,7 @@ export function activateLineNumbers() {
 
   // ensure consistent code copy/paste behavior across all browsers
   // (see https://github.com/wcoder/highlightjs-line-numbers.js/issues/51)
-  document.addEventListener('copy', function (e: ClipboardEvent) {
+  d.addEventListener('copy', function (e: ClipboardEvent) {
     // get current selection
     const selection: Selection = window.getSelection();
     // override behavior when one wants to copy line of codes
@@ -177,9 +175,7 @@ export function activateLineNumbers() {
       return;
     }
 
-    async(function () {
-      element.innerHTML = lineNumbersInternal(element, options);
-    });
+    element.innerHTML = lineNumbersInternal(element, options);
   }
 
   function lineNumbersValue(value, options) {
@@ -254,7 +250,7 @@ export function activateLineNumbers() {
   }
 
   function getSingleLineOption(options) {
-    const defaultValue: boolean = false;
+    const defaultValue = false;
     if (options.singleLine) {
       return options.singleLine;
     }
@@ -262,7 +258,7 @@ export function activateLineNumbers() {
   }
 
   function getStartFromOption(element, options) {
-    const defaultValue: number = 1;
+    const defaultValue = 1;
     let startFrom: number = defaultValue;
 
     if (isFinite(options.startFrom)) {
@@ -311,17 +307,17 @@ export function activateLineNumbers() {
     }
 
     const lines = getLines(element.innerHTML);
-    let result: string = '';
+    let result = '';
 
-    for (let i: number = 0; i < lines.length; i++) {
-      const lineText = lines[i].length > 0 ? lines[i] : ' ';
+    lines.forEach(element => {
+      const lineText = element.length > 0 ? element : ' ';
       result += format('<span class="{0}">{1}</span>\n', [className, lineText]);
-    }
+    });
 
     element.innerHTML = result.trim();
   }
 
-  function getLines(text) {
+  function getLines(text: string) {
     if (text.length === 0) {
       return [];
     }
@@ -335,10 +331,6 @@ export function activateLineNumbers() {
   ///
   /// HELPERS
   ///
-
-  function async(func) {
-    w.setTimeout(func, 0);
-  }
 
   /**
    * {@link https://wcoder.github.io/notes/string-format-for-string-formating-in-javascript}
@@ -369,7 +361,7 @@ export function activateLineNumbers() {
     if (!str) {
       return fallback;
     }
-    const number: number = Number(str);
+    const number = Number(str);
     return isFinite(number) ? number : fallback;
   }
 }

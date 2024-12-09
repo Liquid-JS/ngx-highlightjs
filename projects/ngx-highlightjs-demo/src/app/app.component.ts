@@ -1,24 +1,22 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
+import { HighlightLoader } from 'ngx-highlightjs';
+import { Gist } from 'ngx-highlightjs/plus';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { Highlight, HighlightLoader } from 'ngx-highlightjs';
-import { CodeFromUrlPipe, Gist } from 'ngx-highlightjs/plus';
 import { GistComponent } from './gist/gist.component';
 import { HeaderComponent } from './header/header.component';
-import { CodeComponent } from './code/code.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -29,10 +27,7 @@ import { CodeComponent } from './code/code.component';
     MatToolbarModule,
     NgScrollbarModule,
     HeaderComponent,
-    GistComponent,
-    CodeComponent,
-    Highlight,
-    CodeFromUrlPipe
+    GistComponent
   ]
 })
 export class AppComponent implements OnInit {
@@ -41,9 +36,9 @@ export class AppComponent implements OnInit {
 
   gist!: Gist;
 
-  codeUrl: string = 'https://raw.githubusercontent.com/MurhafSousli/ngx-highlightjs/master/README.md';
+  codeUrl = 'https://raw.githubusercontent.com/MurhafSousli/ngx-highlightjs/master/README.md';
 
-  testCode: string = `
+  testCode = `
   var testString = @$"
    Some multi-
    line text
@@ -51,10 +46,10 @@ export class AppComponent implements OnInit {
   `
 
   // Gist id
-  gistId: string = '6fd1b8fe940ded9f792335addb60c809';
+  gistId = '6fd1b8fe940ded9f792335addb60c809';
 
   // Themes
-  theme: string = 'androidstudio';
+  theme = 'androidstudio';
   styles: string[] = [
     'a11y-dark',
     'a11y-light',
@@ -135,7 +130,7 @@ export class AppComponent implements OnInit {
   }
 
   changeTheme(): void {
-    this.hljsLoader.setTheme(`//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/${ this.theme }.min.css`);
+    this.hljsLoader.setTheme(`//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/${this.theme}.min.css`);
   }
 
 }
